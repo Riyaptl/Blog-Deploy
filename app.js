@@ -2,15 +2,15 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const blogRoutes = require('./routes/blogRoutes');
-const port = 3000;
+const dotenv = require("dotenv");
 
 // Exptress app
+dotenv.config()
 const app = express();
 
 // Connect to database
-const dbURI = 'mongodb+srv://Riya:Riya7299@cluster0.1rltxmb.mongodb.net/node-tuts?retryWrites=true&w=majority'
-mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
-    .then(result => app.listen(port, () => console.log(`server is running on port ${port}`)))
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(result => app.listen(process.env.PORT, () => console.log(`server is running on port ${process.env.PORT}`)))
     .catch(err => console.log(err));
 
 // Register view engine
@@ -18,11 +18,10 @@ app.set('view engine', 'ejs');
 
 // Middleware
 app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true}));
 
 // Static files
 app.use(express.static('public'));
-
-app.use(express.urlencoded({ extended: true}));
 
 // Routes
 app.get("/", (req,res) => {
